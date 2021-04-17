@@ -1,8 +1,6 @@
 package com.example.okrwebsite.dao;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.example.okrwebsite.dto.OkrItemDto;
 import com.example.okrwebsite.factory.DynamoMapperFactory;
 import com.example.okrwebsite.model.OkrItem;
@@ -12,8 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Dao to access data in the OkrItem Dynamo
+ */
 @Log4j2
 @Repository
 public class OkrItemDao {
@@ -24,13 +24,13 @@ public class OkrItemDao {
         this.dynamoDBMapper = DynamoMapperFactory.getDynamoDBMapper();
     }
 
-    public void createOrUpdateOkrItem(@NonNull final OkrItem okrItem) {
+    public void createOrUpdateOkrItem( final OkrItem okrItem) {
         final OkrItemDto okrItemDto = new OkrItemDto(okrItem);
         try {
-            log.debug("okrItemDao.createOrUpdateOkrItem with input {}", okrItem);
-            dynamoDBMapper.save(okrItem);
+            log.debug("okrItemDao.createOrUpdateOkrItem with input {}", okrItemDto);
+            dynamoDBMapper.save(okrItemDto);
         } catch (final RuntimeException e) {
-            log.error("dynamoDBMapper failed to save okrItem {}", okrItem);
+            log.error("dynamoDBMapper failed to save okrItem {}", okrItemDto);
             throw new RuntimeException(e);
         }
     }
@@ -47,7 +47,18 @@ public class OkrItemDao {
         return okrItemList;
     }
 
-    public Optional<List<OkrItem>> getOkrItem(final String assignee) {
-        return Optional.empty();
+    public List<OkrItem> getOkrItem(final String assignee) {
+        final DynamoDBQueryExpression<OkrItemDto> query = new DynamoDBQueryExpression<>();
+        final OkrItemDto dtoToQuery = new OkrItemDto();
+        dtoToQuery.setAssignee(assignee);
+        query.setHashKeyValues(dtoToQuery);
+
+        log.debug("okrItemDao.getOkrItem for assignee {}", assignee);
+        final PaginatedQueryList<OkrItemDto> okrItemDtos = dynamoDBMapper.query(OkrItemDto.class, query);
+        final List<OkrItem> okrItemList = new ArrayList<>();
+        okrItemDtos.forEach(okrItemDto -> {
+            okrItemList.add(okrItemDto.toBusinessObject());
+        });
+        return okrItemList;
     }
 }

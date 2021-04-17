@@ -6,9 +6,12 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.example.okrwebsite.model.KeyResult;
 import com.example.okrwebsite.model.OkrItem;
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.joda.time.DateTime;
 
@@ -17,36 +20,67 @@ import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
-@DynamoDBTable(tableName="OkrItem")
+/**
+ * The data model to save to and retrieve from Dynamo.
+ */
 @ToString
-@EqualsAndHashCode
+@Getter
+@Setter
+@DynamoDBTable(tableName="OkrItem")
 public class OkrItemDto {
     private static final Gson GSON = new Gson();
     private static final Type STRING_LIST = new TypeToken<List<String>>() {}.getType();
     private static final Type KEY_RESULTS = new TypeToken<List<KeyResult>>() {}.getType();
 
-    @DynamoDBHashKey(attributeName = "id")
     @DynamoDBAttribute
-    private final String id;
+    private String target;
     @DynamoDBAttribute
-    private final String target;
+    private String departments;
     @DynamoDBAttribute
-    private final String departments;
+    private String startDate;
     @DynamoDBAttribute
-    private final String startDate;
+    private String endDate;
     @DynamoDBAttribute
-    private final String endDate;
-    @DynamoDBRangeKey(attributeName = "assignee")
+    private String assignee;
     @DynamoDBAttribute
-    private final String assignee;
+    private String score;
     @DynamoDBAttribute
-    private final String score;
-    @DynamoDBAttribute
-    private final String keyResults;
+    private String keyResults;
 
+    @DynamoDBHashKey(attributeName = "HashKey")
+    public String getHashKey() {
+        return this.assignee;
+    }
+
+    public void setHashKey(final String HashKey) {
+        //No-op
+    }
+
+    @DynamoDBRangeKey(attributeName = "RangeKey")
+    public String getRangeKey() {
+        return this.target;
+    }
+
+    public void setRangeKey(final String RangeKey) {
+        //No-op
+    }
+
+    public OkrItemDto() {
+    }
+
+    private String getRangeStart(final String startTime) {
+        final List<String> queryComponent = ImmutableList.of(
+                this.target,
+                this.departments,
+                startTime,
+                this.score,
+                this.keyResults
+        );
+
+        return Joiner.on("#").join(queryComponent);
+    }
 
     public OkrItemDto(final OkrItem okrItem) {
-        this.id = OkrItem.getId();
         this.target = okrItem.getTarget();
         this.departments = GSON.toJson(okrItem.getDepartments());
         this.startDate = okrItem.getStartDate().toString();

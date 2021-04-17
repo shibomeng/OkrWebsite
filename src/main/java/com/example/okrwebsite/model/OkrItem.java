@@ -11,8 +11,6 @@ import java.util.UUID;
 @Value
 @Builder
 public class OkrItem {
-    private static final String id = UUID.randomUUID().toString();
-
     @NonNull
     String target;
     @NonNull
@@ -27,8 +25,4 @@ public class OkrItem {
     Integer score;
     @NonNull
     List<KeyResult> keyResults;
-
-    public static String getId() {
-        return id;
-    }
 }

@@ -8,9 +8,15 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
 
+/**
+ * The entry point of the application.
+ */
 @SpringBootApplication
 public class OkrwebsiteApplication {
 
+	/**
+	 * Starting command: ./mvnw spring-boot:run
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(OkrwebsiteApplication.class, args);
 	}
