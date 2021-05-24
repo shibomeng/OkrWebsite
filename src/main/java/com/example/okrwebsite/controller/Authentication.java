@@ -15,7 +15,6 @@ import javax.inject.Inject;
 public class Authentication {
     private static final String LOGIN = "/login";
     private static final String REGISTER = "/register";
-    private static final String LOCAL_HOST = "http://localhost:8080";
     private static final int HTTP_SUCCESS_CODE = 200;
     private static final int HTTP_SERVER_ERROR_CODE = 500;
     private static final int HTTP_CLIENT_ERROR_CODE = 400;
@@ -24,7 +23,7 @@ public class Authentication {
     @Inject
     private EmployeeDao employeeDao;
 
-    @CrossOrigin(origins = LOCAL_HOST)
+    @CrossOrigin
     @GetMapping(LOGIN)
     public ResponseEntity<?> login(@RequestParam("username") final String username,
                                    @RequestParam("password") final String password) {
@@ -38,7 +37,7 @@ public class Authentication {
         }
     }
 
-    @CrossOrigin(origins = LOCAL_HOST)
+    @CrossOrigin
     @PostMapping(REGISTER)
     public ResponseEntity<?> register(@RequestBody final String usernameAndPassword) {
         final JsonObject jsonObject = GSON.fromJson(usernameAndPassword, JsonObject.class);

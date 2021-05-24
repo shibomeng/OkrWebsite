@@ -13,7 +13,6 @@ import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import java.lang.reflect.Type;

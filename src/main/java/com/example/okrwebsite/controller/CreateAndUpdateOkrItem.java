@@ -24,7 +24,6 @@ import java.util.List;
 public class CreateAndUpdateOkrItem {
     private static final String CREATE_OKR_ITEM = "/createOkrItem";
     private static final String UPDATE_OKR_ITEM = "/updateOkrItem";
-    private static final String LOCAL_HOST = "http://localhost:8080";
     private static final int HTTP_SUCCESS_CODE = 200;
     private static final int HTTP_SERVER_ERROR_CODE = 500;
     private static final int HTTP_CLIENT_ERROR_CODE = 400;
@@ -37,7 +36,7 @@ public class CreateAndUpdateOkrItem {
     @Inject
     private EmployeeChecker employeeChecker;
 
-    @CrossOrigin(origins = LOCAL_HOST)
+    @CrossOrigin
     @PostMapping(CREATE_OKR_ITEM)
     public ResponseEntity<?> createOkrItem(@RequestBody final String okrItem,
                                         @RequestParam("employeeId") final String employeeId) {
@@ -59,7 +58,7 @@ public class CreateAndUpdateOkrItem {
         return ResponseEntity.status(HTTP_SUCCESS_CODE).build();
     }
 
-    @CrossOrigin(origins = LOCAL_HOST)
+    @CrossOrigin
     @PutMapping(UPDATE_OKR_ITEM)
     public ResponseEntity<?> updateOkrItem(@RequestBody final String okrItem,
                               @RequestParam("okrId") final String okrId,
