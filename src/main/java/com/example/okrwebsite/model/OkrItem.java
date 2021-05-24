@@ -3,22 +3,23 @@ package com.example.okrwebsite.model;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import java.util.List;
-import java.util.UUID;
 
 @Value
 @Builder
 public class OkrItem {
     @NonNull
+    String id;
+    @NonNull
     String target;
     @NonNull
     List<String> departments;
     @NonNull
-    DateTime startDate;
+    LocalDate startDate;
     @NonNull
-    DateTime endDate;
+    LocalDate endDate;
     @NonNull
     String assignee;
     @NonNull

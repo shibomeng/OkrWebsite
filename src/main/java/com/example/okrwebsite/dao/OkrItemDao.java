@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.example.okrwebsite.dto.OkrItemDto;
 import com.example.okrwebsite.factory.DynamoMapperFactory;
 import com.example.okrwebsite.model.OkrItem;
+import com.example.okrwebsite.util.UuidGenerator;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
@@ -24,8 +25,15 @@ public class OkrItemDao {
         this.dynamoDBMapper = DynamoMapperFactory.getDynamoDBMapper();
     }
 
-    public void createOrUpdateOkrItem( final OkrItem okrItem) {
+    public void createOrUpdateOkrItem(final OkrItem okrItem, final String assignee, final String okrId) {
         final OkrItemDto okrItemDto = new OkrItemDto(okrItem);
+        okrItemDto.setAssignee(assignee);
+        if (okrId != null) {
+            okrItemDto.setId(okrId);
+        } else {
+            okrItemDto.setId(UuidGenerator.generateUuid());
+        }
+
         try {
             log.debug("okrItemDao.createOrUpdateOkrItem with input {}", okrItemDto);
             dynamoDBMapper.save(okrItemDto);

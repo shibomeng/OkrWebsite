@@ -6,11 +6,11 @@ import lombok.Value;
 
 @Value
 @Builder
-public class KeyResult {
+public class Employee {
     @NonNull
     String id;
     @NonNull
-    String result;
+    String username;
     @NonNull
-    Integer weight;
+    String password;
 }
